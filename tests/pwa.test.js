@@ -11,7 +11,7 @@ function harness(file='sw.js',scope='https://example.test/droneinvestcalc/'){
  return {handlers,stores,deleted,requests,get skipped(){return skipped;},get claimed(){return claimed;},async lifecycle(type){let p;handlers[type]({waitUntil:v=>p=v});await p;},async fetch(url,mode='cors',method='GET'){let p;handlers.fetch({request:{url,mode,method},respondWith:v=>p=v});return p?await p:null;}};
 }
 for(const prefix of ['', 'dist/'])test('Install manifest and icons resolve at clean root: '+(prefix||'Pages'),()=>{
- const manifest=JSON.parse(read(prefix+'manifest.webmanifest'));assert.equal(manifest.start_url,'./');assert.equal(manifest.scope,'./');assert.equal(manifest.id,'./');assert.equal(manifest.display,'standalone');
+ const manifest=JSON.parse(read(prefix+'manifest.webmanifest'));assert.equal(manifest.start_url,'./');assert.equal(manifest.scope,'./');assert.equal(manifest.id,undefined,'no id: "./" resolves to the site root and collides with other apps on the same origin; the default is this app’s own start URL');assert.equal(manifest.display,'standalone');
  for(const size of [192,512])for(const purpose of ['any','maskable']){
   const icon=manifest.icons.find(i=>i.sizes===`${size}x${size}`&&i.purpose===purpose);assert.ok(icon);
   const path=new URL('../'+prefix+icon.src,import.meta.url);const bytes=readFileSync(path);assert.equal(bytes.toString('ascii',1,4),'PNG');assert.equal(bytes.readUInt32BE(16),size);assert.equal(bytes.readUInt32BE(20),size);
