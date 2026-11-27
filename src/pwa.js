@@ -1,3 +1,4 @@
+import {setupInstallControl} from './install-controller.js';
 import {t,localize} from './i18n.js';
 import {applyUpdate} from './update-controller.js';
 const manifest = document.querySelector('link[rel="manifest"]');
@@ -5,7 +6,7 @@ const root = new URL('./', manifest.href);
 const panel = document.createElement('section');
 panel.className = 'pwa-panel no-print';
 panel.setAttribute('aria-label', 'App installation and offline availability');
-panel.innerHTML = '<span id="pwa-status" role="status" aria-live="polite">Preparing offline access…</span><button id="pwa-install" type="button">Install app</button><button id="pwa-update" type="button" hidden>Update available · reload</button>';
+panel.innerHTML = '<span id="pwa-status" role="status" aria-live="polite">Preparing offline access…</span><button id="pwa-install" type="button" hidden>Install app</button><button id="pwa-update" type="button" hidden>Update available · reload</button>';
 document.body.append(panel);
 const help = document.createElement('dialog');
 help.className = 'pwa-help';
@@ -14,21 +15,14 @@ document.body.append(help);
 const status = panel.querySelector('#pwa-status');
 const install = panel.querySelector('#pwa-install');
 const update = panel.querySelector('#pwa-update');
-let promptEvent, registration, offlineReady = false;
-const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+let registration, offlineReady = false;
+const installControl = setupInstallControl({button:install, window, navigator, showHelp:()=>help.showModal()});
 function showStatus() {
   status.textContent = !navigator.onLine ? (offlineReady ? 'Offline · calculator ready' : 'Offline · connect once to enable offline use') : offlineReady ? 'Available offline' : 'Preparing offline access…';
-  install.hidden = standalone();
+  installControl.refresh();
 }
 window.addEventListener('online', showStatus);
 window.addEventListener('offline', showStatus);
-window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); promptEvent = event; install.hidden = false; });
-window.addEventListener('appinstalled', () => { promptEvent = null; install.hidden = true; });
-install.addEventListener('click', async () => {
-  if (!promptEvent) { help.showModal(); return; }
-  const pending = promptEvent; promptEvent = null;
-  try { await pending.prompt(); await pending.userChoice; } catch { help.showModal(); }
-});
 let updating=false;
 function reloadOnce(){if(reloading)return;reloading=true;window.location.reload();}
 function refreshWaiting(){
@@ -76,7 +70,7 @@ if ('serviceWorker' in navigator && window.isSecureContext) {
   }).catch(() => { status.textContent = 'Offline setup unavailable · calculator still works online'; });
 } else status.textContent = 'Offline installation requires a supported browser and HTTPS';
 if ('serviceWorker' in navigator && window.isSecureContext) showStatus();
-else install.hidden = standalone();
+else installControl.refresh();
 
 document.addEventListener('languagechange',()=>{showStatus();refreshWaiting();localize(panel);localize(help);});
 localize(panel);localize(help);
