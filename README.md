@@ -30,7 +30,7 @@ python3 -m http.server 8080 --directory dist
 
 Open `http://localhost:8080`. Serve over HTTP; ES modules do not support opening `index.html` directly as a file. Deploy `dist/` to any static host. Relative asset paths support subdirectory hosting, including GitHub Pages.
 
-`.openai/hosting.json` identifies the associated private Sites deployment. GitHub Actions validates the app and uploads a ready-to-host static build on every push. GitHub Pages publishes `main` at the repository root: `index.html` opens the app at `src/`, and `.nojekyll` disables README/Jekyll rendering. The dependency-free source app runs directly as static files, while other hosts can use the identical app copied to `dist/` by the build. The GitHub repository is the user-facing source of truth; the Sites source remote contains the same commit for publication.
+`.openai/hosting.json` identifies the associated private Sites deployment. GitHub Actions validates the app and uploads a ready-to-host static build on every push. GitHub Pages publishes `main` at the repository root: `index.html` renders the calculator directly at `/droneinvestcalc/` without redirecting. Its HTML base resolves assets from `src/`, and `.nojekyll` disables README/Jekyll rendering. The build keeps this root entry synchronized with `src/index.html`. The dependency-free source app runs directly as static files, while other hosts can use the identical app copied to `dist/` by the build. The GitHub repository is the user-facing source of truth; the Sites source remote contains the same commit for publication.
 
 ## Calculation engine
 
