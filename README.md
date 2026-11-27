@@ -57,8 +57,20 @@ Sample baseline: 10 acres, 450 trees, 36 rounds annually, MYR 63,500 upfront inv
 
 ## Data and privacy
 
-Plan inputs are stored only in browser local storage, with no application account, database or analytics. Clearing browser storage removes plans. Export JSON backups for transfer or safekeeping. The stylesheet requests Google Fonts; if unavailable, system fonts are used. No plan data is sent to the font service.
+Plan inputs are stored only in browser local storage, with no application account, database or analytics. Clearing browser storage removes plans. Export JSON backups for transfer or safekeeping. The app uses system font fallbacks and has no third-party font dependency. No plan data is sent to a server.
 
 ## Verification status
 
 Automated financial and storage tests and static build pass. Browser QA could not run in the authoring environment because the managed preview relay timed out. Desktop/mobile interaction and print appearance should receive a visual acceptance pass on the deployed site.
+
+## Installable PWA and offline use
+
+Open the app online once, then choose **Install app**. Chrome/Edge can show a native install prompt; Safari users can use Share → Add to Home Screen. Dedicated PNG icons include standard 192/512 sizes, maskable variants with a safe-zone design, and a 180px Apple touch icon.
+
+The manifest launches at the project root in standalone mode. The root `sw.js` controls `/droneinvestcalc/`, including its `src/` assets. The static `dist/` build has its own root-relative manifest and worker for hosting at any directory. No special Service-Worker-Allowed header is needed.
+
+The entire local app shell is precached at installation, so calculations, local plans, JSON/CSV exports and report generation work offline after successful setup. Browser print-to-PDF availability remains browser dependent. The status panel shows offline readiness. Plans remain in local storage; the service worker never caches plan data or external requests.
+
+Builds hash the HTML, manifest, app assets and worker template into a release cache name. An update installs completely before being offered. Users select **Update available · reload** to activate it; activation removes only obsolete DroneInvest caches for the same scope. Other open tabs reload on activation, using already autosaved plans. Clearing browser storage removes offline files and saved plans; export backups first.
+
+`npm run build` regenerates tracked `index.html`, `manifest.webmanifest` and `sw.js` for branch-based Pages, plus the independent `dist/` deployment. Commit those generated root files with source updates. The service worker serves a consistent cached release until an update is accepted.
