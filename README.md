@@ -19,9 +19,10 @@ A responsive, browser-local investment calculator for agricultural drone sprayin
 
 ## Run and build
 
-Requires Node.js 22 or later. No runtime dependencies or installation are needed.
+Requires Node.js 22 or later. The app has no runtime dependencies. Run `npm ci` to install the DOM test dependency before running checks.
 
 ```sh
+npm ci
 npm run check
 npm test
 npm run build
@@ -74,3 +75,11 @@ The entire local app shell is precached at installation, so calculations, local 
 Builds hash the HTML, manifest, app assets and worker template into a release cache name. An update installs completely before being offered. Users select **Update available · reload** to activate it; activation removes only obsolete DroneInvest caches for the same scope. Other open tabs reload on activation, using already autosaved plans. Clearing browser storage removes offline files and saved plans; export backups first.
 
 `npm run build` regenerates tracked `index.html`, `manifest.webmanifest` and `sw.js` for branch-based Pages, plus the independent `dist/` deployment. Commit those generated root files with source updates. The service worker serves a consistent cached release until an update is accepted.
+
+## Mobile layout and languages
+
+The toolbar language switch supports English, Simplified Chinese and Bahasa Melayu. Preference is stored locally and works offline. Interface text, input notes, validation, reports, scenarios and PWA guidance are translated; user-entered names/notes and canonical model values remain unchanged. Locale-aware number/date formatting never changes the MYR currency or financial calculations. Translation messages live in `src/locales/messages.js`; `src/i18n.js` applies them to display text only.
+
+On phones, Inputs/Results tabs avoid scrolling through the whole form to see results. Fields use a single column, 16px input text, larger touch targets and normal page scrolling. The offline/install panel is in document flow rather than covering form controls. Desktop comparison remains side by side.
+
+The update control explicitly handles a waiting worker, an already-activated worker, installation in progress and an activation timeout. It shows progress, re-enables retries on failure and reloads on worker activation even if a controllerchange notification is missed. Worker activation now retains its message event until skipWaiting completes.

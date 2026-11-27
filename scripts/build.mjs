@@ -11,7 +11,7 @@ const manifest = JSON.parse(await readFile('src/manifest.webmanifest','utf8'));
 const pagesManifest = {...manifest, icons:manifest.icons.map(icon=>({...icon,src:icon.src.replace('./icons/','./src/icons/')}))};
 await writeFile('manifest.webmanifest', JSON.stringify(pagesManifest,null,2)+'\n');
 const template = await readFile('src/sw-template.js','utf8');
-const assets = ['app.js','fields.js','model.js','storage.js','styles.css','favicon.svg','pwa.js',...(await readdir('src/icons')).map(p=>'icons/'+p)];
+const assets = ['app.js','fields.js','model.js','storage.js','styles.css','favicon.svg','pwa.js','i18n.js','locales/messages.js','update-controller.js',...(await readdir('src/icons')).map(p=>'icons/'+p)];
 async function worker(target, prefix, indexPath, manifestPath) {
   const hash = createHash('sha256');
   hash.update(template);

@@ -1,3 +1,5 @@
+import {t,localize} from './i18n.js';
+import {applyUpdate} from './update-controller.js';
 const manifest = document.querySelector('link[rel="manifest"]');
 const root = new URL('./', manifest.href);
 const panel = document.createElement('section');
@@ -27,27 +29,46 @@ install.addEventListener('click', async () => {
   const pending = promptEvent; promptEvent = null;
   try { await pending.prompt(); await pending.userChoice; } catch { help.showModal(); }
 });
-update.addEventListener('click', () => {
-  if (!registration?.waiting) return;
-  update.disabled = true;
-  registration.waiting.postMessage({type: 'ACTIVATE_UPDATE'});
+let updating=false;
+function reloadOnce(){if(reloading)return;reloading=true;window.location.reload();}
+function refreshWaiting(){
+  if(updating)return;
+  const waiting=!!registration?.waiting;
+  update.hidden=!waiting;
+  update.disabled=false;
+  update.textContent=t('Update available · reload');
+}
+update.addEventListener('click', async () => {
+  if(updating)return;
+  updating=true; update.disabled=true;
+  // Refresh registration: the worker referenced by the banner may have activated elsewhere.
+  try {
+    const current=await navigator.serviceWorker.getRegistration(root.href);
+    registration=current||registration;
+    await applyUpdate(registration,{
+      reload:reloadOnce,
+      progress:message=>{update.textContent=t(message);status.textContent=t(message);},
+      fail:message=>{status.textContent=t(message);update.disabled=false;update.textContent=t('Update available · reload');},
+    });
+  } catch {status.textContent=t('Update could not finish. Your plans are saved; please retry.');update.disabled=false;}
+  finally{updating=false;}
 });
 let hadController = !!navigator.serviceWorker?.controller;
 let reloading = false;
 if ('serviceWorker' in navigator && window.isSecureContext) {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     // New releases activate only when accepted (including acceptance in another tab).
-    if (hadController && !reloading) { reloading = true; window.location.reload(); }
+    if (hadController && !reloading) reloadOnce();
     hadController = true;
     offlineReady = true; showStatus();
   });
   navigator.serviceWorker.register(new URL('sw.js', root), {scope: root.href, updateViaCache: 'none'}).then(async reg => {
     registration = reg;
-    const waiting = () => { update.hidden = !reg.waiting; };
+    const waiting = refreshWaiting;
     waiting();
     reg.addEventListener('updatefound', () => {
       const worker = reg.installing;
-      worker?.addEventListener('statechange', () => { if (worker.state === 'installed') waiting(); });
+      worker?.addEventListener('statechange', () => { if (['installed','activated','redundant'].includes(worker.state)) waiting(); });
     });
     await navigator.serviceWorker.ready;
     offlineReady = true; showStatus();
@@ -56,3 +77,6 @@ if ('serviceWorker' in navigator && window.isSecureContext) {
 } else status.textContent = 'Offline installation requires a supported browser and HTTPS';
 if ('serviceWorker' in navigator && window.isSecureContext) showStatus();
 else install.hidden = standalone();
+
+document.addEventListener('languagechange',()=>{showStatus();refreshWaiting();localize(panel);localize(help);});
+localize(panel);localize(help);
