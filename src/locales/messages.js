@@ -1753,11 +1753,11 @@ export const messages = {
     "ms": "Penghargaan analisis"
   },
   "Original drone-spraying cost analysis by Bryan Woo.": {
-    "zh": "原始无人机喷洒成本分析由 Bryan Woo 编制。",
+    "zh": "原始无人机喷洒成本分析由 胡学轩（Bryan Woo） 编制。",
     "ms": "Analisis kos semburan dron asal oleh Bryan Woo."
   },
   "DroneInvest is based on Bryan Woo’s original 10-acre drone-spraying cost analysis. The app adapts and extends his analysis with additional scenarios and calculation checks.": {
-    "zh": "DroneInvest 基于 Bryan Woo 的原始 10 英亩无人机喷洒成本分析。本应用在其分析基础上改编并扩展，加入更多情景及计算校验。",
+    "zh": "DroneInvest 基于 胡学轩（Bryan Woo） 的原始 10 英亩无人机喷洒成本分析。本应用在其分析基础上改编并扩展，加入更多情景及计算校验。",
     "ms": "DroneInvest berasaskan analisis kos semburan dron asal untuk 10 ekar oleh Bryan Woo. Aplikasi ini mengadaptasi dan mengembangkan analisis beliau dengan senario tambahan dan semakan pengiraan."
   }
 };

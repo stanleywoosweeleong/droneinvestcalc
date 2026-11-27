@@ -86,4 +86,4 @@ The update control explicitly handles a waiting worker, an already-activated wor
 
 ## Analysis credit
 
-The original 10-acre drone-spraying cost analysis was prepared by **Bryan Woo**, in the source workbook `2026-0922 Drone_Spraying_Cost_10acre by Bryan.xlsx`. DroneInvest adapts and extends his analysis with additional scenarios, calculation checks and an interactive application. Bryan Woo is credited for the original analysis in the app footer, methodology page and printable investment report, in English, Chinese and Malay.
+The original 10-acre drone-spraying cost analysis was prepared by **Bryan Woo (胡学轩)**, in the source workbook `2026-0922 Drone_Spraying_Cost_10acre by Bryan.xlsx`. DroneInvest adapts and extends his analysis with additional scenarios, calculation checks and an interactive application. Bryan Woo is credited for the original analysis in the app footer, methodology page and printable investment report, in English, Chinese and Malay.
