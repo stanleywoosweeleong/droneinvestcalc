@@ -83,3 +83,7 @@ The toolbar language switch supports English, Simplified Chinese and Bahasa Mela
 On phones, Inputs/Results tabs avoid scrolling through the whole form to see results. Fields use a single column, 16px input text, larger touch targets and normal page scrolling. The offline/install panel is in document flow rather than covering form controls. Desktop comparison remains side by side.
 
 The update control explicitly handles a waiting worker, an already-activated worker, installation in progress and an activation timeout. It shows progress, re-enables retries on failure and reloads on worker activation even if a controllerchange notification is missed. Worker activation now retains its message event until skipWaiting completes.
+
+## Analysis credit
+
+The original 10-acre drone-spraying cost analysis was prepared by **Bryan Woo**, in the source workbook `2026-0922 Drone_Spraying_Cost_10acre by Bryan.xlsx`. DroneInvest adapts and extends his analysis with additional scenarios, calculation checks and an interactive application. Bryan Woo is credited for the original analysis in the app footer, methodology page and printable investment report, in English, Chinese and Malay.
